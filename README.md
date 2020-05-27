@@ -137,3 +137,30 @@ public static String resquestForString(Method method,String url,List<NameValuePa
 ```
 
 对返回的response 数据转换为实体，在转换为字符串，对返回的字符串进行解析
+
+## java模拟登陆
+
+### 1.保存登陆时返回的cookie数据
+
+```java
+//用于登录返回cookie，调用了post
+public String getCookie(String username,String password) {
+   String cookie="";
+   CookieStore cookieStore=new BasicCookieStore();
+   //构建表单参数
+   List<NameValuePair> formParams = new ArrayList<NameValuePair>();
+   formParams.add(new BasicNameValuePair("userName", username));
+   formParams.add(new BasicNameValuePair("password", password));
+   Util.resquest(Method.post,"http://localhost/vmt/login/doLogin",formParams,cookieStore,null);
+   List<Cookie> cookies=cookieStore.getCookies();
+   for(Cookie cook:cookies){
+      cookie=cook.getName()+"="+cook.getValue();
+      log.info(username+"登录成功，cookie:"+cookie);
+   }
+   return cookie;
+}
+```
+
+2.请求时带上cookie
+
+请求时的cookie为string类型，形式为cookie名=cookie值;
